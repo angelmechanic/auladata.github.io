@@ -1,14 +1,587 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="es-CL">
 <head>
-  <meta charset="UTF-8">
-  <title>AulaData</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AulaData | Gestión escolar digital para colegios en Chile</title>
+  <meta name="description" content="AulaData digitaliza procesos escolares con planillas Excel personalizadas y soluciones web claras para establecimientos educacionales en Chile.">
+  <meta property="og:title" content="AulaData | Digitalizamos la gestión escolar">
+  <meta property="og:description" content="Planillas Excel personalizadas y soluciones digitales para una gestión escolar más ordenada, trazable y eficiente.">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --text: #101828;
+      --muted: #475467;
+      --line: #d0d5dd;
+      --accent: #0b4f8a;
+      --accent-2: #0f766e;
+      --focus: #f59e0b;
+      --radius: 14px;
+      --shadow: 0 10px 26px rgba(16, 24, 40, 0.08);
+      --maxw: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #f5f7fb 0%, #eef3fa 100%);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--text);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      z-index: 999;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .skip-link:focus-visible {
+      left: 1rem;
+      top: 1rem;
+    }
+
+    .container {
+      width: min(100% - 2rem, var(--maxw));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .nav-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.35rem;
+    }
+
+    .nav-list a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.93rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 10px;
+    }
+
+    .nav-list a:hover {
+      background: #e8f1fc;
+      color: var(--accent);
+    }
+
+    main section { padding: 3.6rem 0; }
+
+    h1, h2, h3 {
+      margin: 0 0 0.8rem;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    h1 { font-size: clamp(1.8rem, 4vw, 2.9rem); }
+    h2 { font-size: clamp(1.35rem, 3vw, 2rem); color: #0b2340; }
+    h3 { font-size: 1.05rem; color: #0b2340; }
+
+    p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+
+    .hero {
+      padding-top: 4.2rem;
+      padding-bottom: 4.2rem;
+    }
+
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 1.4rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: #e8f1fc;
+      border: 1px solid #c4daf8;
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+    }
+
+    .lead {
+      color: #1d2939;
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      max-width: 70ch;
+    }
+
+    .actions {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      padding: 0.7rem 1rem;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: transform 0.12s ease, background-color 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #083d6a; }
+
+    .btn-secondary {
+      background: #e8f1fc;
+      color: var(--accent);
+      border-color: #c4daf8;
+    }
+
+    .btn-secondary:hover { background: #dceafe; }
+
+    .section-copy { max-width: 78ch; }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .cards-2 { grid-template-columns: 1fr; }
+    .cards-3 { grid-template-columns: 1fr; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card--optional {
+      border-style: dashed;
+      background: #fbfdff;
+    }
+
+    .card p strong { color: #0b2340; }
+
+    .faq-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 700;
+      color: #0b2340;
+      padding: 0.95rem 1rem;
+      position: relative;
+      padding-right: 2.5rem;
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+
+    .faq-item summary::after {
+      content: "+";
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      color: var(--accent);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .faq-item[open] summary::after { content: "−"; }
+
+    .faq-answer {
+      padding: 0 1rem 1rem;
+      color: #1d2939;
+      border-top: 1px solid #e4e7ec;
+    }
+
+    .list {
+      margin: 0.5rem 0 0;
+      padding-left: 1.15rem;
+      color: #1d2939;
+    }
+
+    .list li { margin-bottom: 0.4rem; }
+
+    .result {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      border: 1px solid #b7e4db;
+      background: #ecfdf8;
+      color: #115e59;
+      font-weight: 700;
+    }
+
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      counter-reset: step;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .steps li {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.85rem 0.9rem 0.85rem 2.9rem;
+      position: relative;
+      color: #1d2939;
+    }
+
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0.8rem;
+      top: 0.7rem;
+      width: 1.45rem;
+      height: 1.45rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 0.5rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid #b5e7de;
+      background: #ebfdf8;
+      color: #0f4f4a;
+      font-weight: 650;
+      font-size: 0.92rem;
+    }
+
+    .contact-box {
+      background: #0b2340;
+      color: #fff;
+      border: 1px solid #183b66;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.2rem;
+    }
+
+    .contact-box h2 { color: #fff; }
+    .contact-box p { color: #dbe6f5; }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      background: #134074;
+      border: 1px solid #2f5f95;
+      border-radius: 10px;
+      padding: 0.55rem 0.8rem;
+      margin: 0.2rem 0 0.75rem;
+    }
+
+    .site-footer {
+      margin-top: 2rem;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      padding: 1.4rem 0 2rem;
+    }
+
+    .site-footer p {
+      margin: 0.25rem 0;
+      color: #344054;
+      font-size: 0.95rem;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    @media (min-width: 760px) {
+      .hero-card { padding: 2rem; }
+      .cards-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .contact-box { padding: 1.5rem; }
+      main section { padding: 4.2rem 0; }
+    }
+  </style>
 </head>
 <body>
-  <h1>AulaData</h1>
-  <p>Soluciones simples para la gestión escolar real.</p>
-  <p>Planillas Excel · Formularios · Web institucional</p>
-  <p>Contacto: contacto@auladata.cl</p>
+  <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#inicio">AulaData</a>
+      <nav aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="#que-hacemos">Qué hacemos</a></li>
+          <li><a href="#problemas">Problemas</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#como-trabajamos">Cómo trabajamos</a></li>
+          <li><a href="#a-quienes-ayudamos">A quiénes ayudamos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-card">
+          <span class="eyebrow">AulaData · Chile</span>
+          <h1 id="hero-title">Digitalizamos la gestión escolar que hoy se lleva en papel.</h1>
+          <p class="lead">Planillas Excel personalizadas para colegios: procesos claros, registros ordenados y respaldo real para la gestión diaria.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="mailto:contacto@auladata.cl">Escríbenos</a>
+            <a class="btn btn-secondary" href="#servicios">Ver servicios</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="que-hacemos" aria-labelledby="que-hacemos-title">
+      <div class="container section-copy">
+        <h2 id="que-hacemos-title">Qué hacemos</h2>
+        <p>Ayudamos a los colegios a ordenar y digitalizar procesos administrativos mediante planillas Excel hechas a la medida de cada establecimiento. Nos enfocamos en lo que hoy quita tiempo y genera errores cuando se maneja en papel.</p>
+      </div>
+    </section>
+
+    <section id="problemas" aria-labelledby="problemas-title">
+      <div class="container">
+        <h2 id="problemas-title">Qué problemas resolvemos</h2>
+        <div class="grid cards-2">
+          <article class="card">
+            <h3>Orden y consistencia de registros</h3>
+            <ul class="list">
+              <li>Registros dispersos y poco claros</li>
+              <li>Pérdida de información y duplicación de trabajo</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Control y trazabilidad administrativa</h3>
+            <ul class="list">
+              <li>Procesos en papel difíciles de auditar</li>
+              <li>Falta de trazabilidad en asistencia y respaldos</li>
+            </ul>
+          </article>
+        </div>
+        <p class="result">Menos carga administrativa, más orden y control.</p>
+      </div>
+    </section>
+
+    <section id="servicios" aria-labelledby="servicios-title">
+      <div class="container">
+        <h2 id="servicios-title">Servicios</h2>
+        <div class="grid cards-3">
+          <article class="card">
+            <h3>Planillas Excel de Gestión Escolar</h3>
+            <ul class="list">
+              <li>Registro y seguimiento de estudiantes PIE</li>
+              <li>Control de asistencia y apelaciones</li>
+              <li>Cartas y respaldos administrativos</li>
+              <li>Registros internos claros y trazables</li>
+              <li>Planillas personalizadas según la realidad del colegio</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Diseño de Página Web Institucional</h3>
+            <ul class="list">
+              <li>Sitios web claros y funcionales para establecimientos educacionales</li>
+              <li>Información institucional, comunicados y contacto</li>
+              <li>Diseño responsivo (computador y celular)</li>
+              <li>Enfoque en claridad, accesibilidad y uso real por la comunidad educativa</li>
+            </ul>
+          </article>
+
+          <article class="card card--optional" aria-label="Servicio opcional de proyección digital">
+            <h3>Proyección Digital (opcional)</h3>
+            <ul class="list">
+              <li>Diseño de soluciones web específicas</li>
+              <li>Formularios y sistemas simples para procesos administrativos</li>
+            </ul>
+            <p><strong>Nota:</strong> Se implementa cuando el colegio lo necesita.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-trabajamos" aria-labelledby="como-trabajamos-title">
+      <div class="container section-copy">
+        <h2 id="como-trabajamos-title">Cómo trabajamos</h2>
+        <ol class="steps">
+          <li>Escuchamos el proceso actual del colegio</li>
+          <li>Diseñamos la solución a medida</li>
+          <li>Probamos y ajustamos con el equipo</li>
+          <li>Entregamos una herramienta clara y usable</li>
+        </ol>
+        <p class="result">Sin plantillas genéricas. Sin sobrecargar de funciones innecesarias.</p>
+      </div>
+    </section>
+
+    <section id="a-quienes-ayudamos" aria-labelledby="publico-title">
+      <div class="container">
+        <h2 id="publico-title">A quiénes ayudamos</h2>
+        <div class="chips" role="list" aria-label="Públicos objetivo de AulaData">
+          <span class="chip" role="listitem">Colegios y liceos</span>
+          <span class="chip" role="listitem">Equipos directivos</span>
+          <span class="chip" role="listitem">UTP, inspectoría y convivencia</span>
+          <span class="chip" role="listitem">Encargados PIE y administrativos</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" aria-labelledby="contacto-title">
+      <div class="container">
+        <div class="contact-box">
+          <h2 id="contacto-title">Contacto</h2>
+          <p>¿Quieres ordenar un proceso que hoy se lleva en papel?</p>
+          <a class="contact-link" href="mailto:contacto@auladata.cl" aria-label="Enviar correo a contacto@auladata.cl">contacto@auladata.cl</a>
+          <p>Servicio orientado a establecimientos educacionales.</p>
+        </div>
+      </div>
+    </section>
+  
+
+    <section id="faq" aria-labelledby="faq-title">
+      <div class="container section-copy">
+        <h2 id="faq-title">Preguntas Frecuentes</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>¿Qué hace exactamente AulaData?</summary>
+            <p class="faq-answer">AulaData ayuda a los colegios a ordenar y digitalizar procesos administrativos que hoy se llevan en papel, creando planillas Excel personalizadas según la realidad de cada establecimiento.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Por qué trabajan con Excel y no con un sistema más grande?</summary>
+            <p class="faq-answer">Porque Excel es una herramienta conocida, accesible e inmediata. Para muchos colegios, es la solución correcta hoy: no requiere capacitaciones complejas ni grandes inversiones. Si el colegio necesita algo más avanzado, se evalúa caso a caso.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Las planillas son genéricas o hechas a medida?</summary>
+            <p class="faq-answer">Son hechas a medida. No entregamos plantillas estándar. Cada planilla se diseña considerando los procesos, responsables y necesidades específicas del colegio.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Trabajan con registros PIE y asistencia?</summary>
+            <p class="faq-answer">Sí. Diseñamos planillas para registro y seguimiento PIE, control de asistencia, apelaciones y respaldos administrativos, siempre con foco en orden, trazabilidad y confidencialidad.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Qué pasa con la información del colegio?</summary>
+            <p class="faq-answer">La información es confidencial y se utiliza exclusivamente para fines de gestión interna del establecimiento. AulaData no comparte ni difunde datos.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Cuánto cuesta el servicio?</summary>
+            <p class="faq-answer">El costo depende del proceso a trabajar. Primero se revisa la necesidad del colegio y luego se entrega una cotización clara y acorde al alcance real del trabajo.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿También hacen páginas web institucionales?</summary>
+            <p class="faq-answer">Sí. Como servicio complementario, diseñamos páginas web institucionales claras y funcionales, enfocadas en informar y comunicar de manera simple a la comunidad educativa.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Qué incluye el acompañamiento?</summary>
+            <p class="faq-answer">El trabajo incluye diseño, prueba y ajustes de la planilla junto al equipo del colegio, para asegurar que sea usable y realmente aporte a la gestión diaria.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>AulaData</strong> — Soluciones simples para la gestión escolar real.</p>
+      <p>Uso responsable y confidencial de la información del establecimiento.</p>
+    </div>
+  </footer>
 </body>
 </html>
+
